@@ -39,5 +39,4 @@ def searchActive(ticker):
         print(f'ERRO - Ativo {e} não encontrado.')
     except Exception as e:
         print(f'ERRO: {e}')
-
-searchActive("PLTR")
+        
