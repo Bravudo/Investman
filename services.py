@@ -8,7 +8,7 @@ from carteira import Stock
 load_dotenv()
 alphaapikey = os.getenv("")
 
-def searchActive(ticker):
+def searchStock(ticker):
     try:
         url = f"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={ticker}&apikey={alphaapikey}"  
         response = requests.get(url)
@@ -18,16 +18,17 @@ def searchActive(ticker):
             if "Global Quote" in data and data["Global Quote"]:
 
                 quote = data["Global Quote"]
+   
                 stock = Stock(
                     symbol = ticker,
-                    openprice = quote['02. open'],
-                    high = quote["03. high"],
-                    low = quote["04. low"],
-                    price = quote["05. price"],
-                    volume = quote["06. volume"],
-                    date = quote["07. latest trading day"],
-                    yesterdaycloseprice = quote['08. previous close'],
-                    performance = quote["10. change percent"]
+                    openprice = float(quote['02. open']),
+                    high = float(quote["03. high"]),
+                    low = float(quote["04. low"]),
+                    price = float(quote["05. price"]),
+                    volume = int(quote["06. volume"]),
+                    date = str(quote["07. latest trading day"]),
+                    yesterdaycloseprice = float(quote['08. previous close']),
+                    performance = float(quote["10. change percent"].replace('%',''))
                  )
                 return stock
 
