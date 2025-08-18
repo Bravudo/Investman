@@ -19,20 +19,21 @@ def selectmenu():
         print('2 > Comprar Ativo')
         print('3 > Vender Ativo')
         print('4 > Ver Perfil')
-        print('5 > Sair')
+        print('5 > Editar Perfil')
+        print('6 > Sair')
         slct = int(input('>> '))
 
         if slct == 1:
             printStock()
-
         if slct == 2: 
             s = 0
         if slct == 3:
             s = 0
         if slct == 4:
-
             s = 0
         if slct == 5: 
+            s = 0
+        if slct == 6: 
             break
 
 
@@ -42,7 +43,6 @@ def selectmenu():
 def defaultinput():
     stockname = str(input('Código do ativo >> ').upper())
     return stockname
-
 
 #Mostrar todos os dados recebidos do ativo
 def printStock():

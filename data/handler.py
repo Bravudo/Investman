@@ -24,5 +24,5 @@ try:
     data = load('carteira.json')
 except json.decoder.JSONDecodeError:
     print("Arquivo vazio/corrompido. Criando novo...")
-    save({}, 'carteira.json')  # Cria um JSON válido (vazio)
+    save({}, 'carteira.json')  
     data = {}
