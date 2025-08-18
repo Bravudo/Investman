@@ -3,7 +3,7 @@ from data.handler import load
 from carteira import Profile, Stock
 
 data = load('carteira.json')
-profile = Profile(name="test", money=1250.50, assets=[{}], historical=[{}])
+profile = Profile(name=data['name'], money=data['money'], assets=data['assets'], historical=data['historical'])
 profile.save()
 
 
@@ -61,3 +61,5 @@ def printStock():
     print(f'- Data dos dados: {stock.date}')
     print('\n\n')
 
+
+system_setup()

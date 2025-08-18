@@ -22,7 +22,19 @@ def load(file_name: str) -> dict:
 
 try:
     data = load('carteira.json')
+    
 except json.decoder.JSONDecodeError:
-    print("Arquivo vazio/corrompido. Criando novo...")
-    save({}, 'carteira.json')  
-    data = {}
+
+    #Iniciando o sistema pela primeira vez
+    print('<-=-> Bem vindo ao Invest-man <-=->')
+    print('\n\n')
+    name = input('Para começar, digite seu nome >> ')
+    money = float(input('Digite a quantidade de dinheiro para sua conta >> '))
+    
+    data = {
+        'name': name,
+        'money': money,
+        'assets': [{}],
+        'historical':[{}] 
+             }
+    save(data, 'carteira.json')  
