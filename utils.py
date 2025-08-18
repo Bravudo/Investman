@@ -1,9 +1,18 @@
 from services import searchStock
+from data.handler import load
+from carteira import Profile, Stock
+
+data = load('carteira.json')
+profile = Profile(name="test", money=1250.50, assets=[{}], historical=[{}])
+profile.save()
 
 
+
+#Main system
 def system_setup():
     selectmenu()
 
+#Menu
 def selectmenu():
     while True:
         print('1 > Buscar Ativo')
@@ -21,6 +30,7 @@ def selectmenu():
         if slct == 3:
             s = 0
         if slct == 4:
+
             s = 0
         if slct == 5: 
             break
@@ -49,7 +59,5 @@ def printStock():
     print(f'- Fechou ontem em: ${stock.closeprice}')
     print(f'- Movimentações: {stock.volume}')
     print(f'- Data dos dados: {stock.date}')
-
     print('\n\n')
 
-selectmenu()
