@@ -1,6 +1,7 @@
 from services import searchStock
 from data.handler import load
 from carteira import Profile, Stock
+import os
 
 data = load('carteira.json')
 profile = Profile(name=data['name'], money=data['money'], assets=data['assets'], historical=data['historical'])
@@ -15,6 +16,7 @@ def system_setup():
 #Menu
 def selectmenu():
     while True:
+        clearTerminal()
         print('1 > Buscar Ativo')
         print('2 > Comprar Ativo')
         print('3 > Vender Ativo')
@@ -44,8 +46,16 @@ def defaultinput():
     stockname = str(input('Código do ativo >> ').upper())
     return stockname
 
+#Limpar o Chat do Terminal
+def clearTerminal():
+    try:
+        os.system('cls')
+    except:
+        os.system('clear')
+
 #Mostrar todos os dados recebidos do ativo
 def printStock():
+    clearTerminal()
     stockname = defaultinput()
     stock = searchStock(stockname)
 
@@ -59,7 +69,13 @@ def printStock():
     print(f'- Fechou ontem em: ${stock.closeprice}')
     print(f'- Movimentações: {stock.volume}')
     print(f'- Data dos dados: {stock.date}')
-    print('\n\n')
+    print('\n')
+    leave = input('Digite qualquer coisa para sair > ')
 
+def buyStock():
+    stockname = defaultinput()
+    stock = searchStock(stockname)
+
+    print()
 
 system_setup()
