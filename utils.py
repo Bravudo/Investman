@@ -28,7 +28,7 @@ def selectmenu():
         if slct == 1:
             printStock()
         if slct == 2: 
-            s = 0
+            buyStock()
         if slct == 3:
             s = 0
         if slct == 4:
@@ -46,6 +46,8 @@ def defaultinput():
     stockname = str(input('Código do ativo >> ').upper())
     return stockname
 
+def leaveinput():
+    input('Digite qualquer coisa para sair > ')
 #Limpar o Chat do Terminal
 def clearTerminal():
     try:
@@ -70,11 +72,35 @@ def printStock():
     print(f'- Movimentações: {stock.volume}')
     print(f'- Data dos dados: {stock.date}')
     print('\n')
-    leave = input('Digite qualquer coisa para sair > ')
+    leaveinput()
 
+#Comprar uma ação
 def buyStock():
+    clearTerminal()
     stockname = defaultinput()
     stock = searchStock(stockname)
+    print(f'>>> {stock.symbol} <<<')
+    print(f'- Preço: ${stock.price:.2f}')
+    print(f'- Lucro/Perda: {stock.performance}%')
+
+    qtd = float(input('\nQuantos ativos você quer comprar?\n>> '))
+    totalprice = float(qtd * stock.price)
+
+    if totalprice <= profile.money:
+        print(f'Total: ${totalprice:.2f} <-> Quantidade: {qtd}')
+        slct = str(input('Confirme a compra (s/n) >> '))
+        if slct == "s":
+            for ativo in profile.assets:
+                if stock.symbol in profile.assets:
+                    print(f'Você já tinha {stock.symbol} na carteira')
+                    leaveinput()
+                else:
+                    print('Você ainda não tinha')
+                    leaveinput()
+                    
+    else:
+        print(f'Saldo Insuficiente para esta compra!')        
+        leaveinput()      
 
     print()
 
