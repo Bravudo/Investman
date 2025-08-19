@@ -34,7 +34,7 @@ except json.decoder.JSONDecodeError:
     data = {
         'name': name,
         'money': money,
-        'assets': [{}],
+        'assets': {},
         'historical':[{}] 
              }
     save(data, 'carteira.json')  

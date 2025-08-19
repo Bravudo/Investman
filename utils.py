@@ -9,6 +9,7 @@ profile.save()
 
 
 
+
 #Main system
 def system_setup():
     selectmenu()
@@ -17,6 +18,7 @@ def system_setup():
 def selectmenu():
     while True:
         clearTerminal()
+        print('__I N V E S T M A N__')
         print('1 > Buscar Ativo')
         print('2 > Comprar Ativo')
         print('3 > Vender Ativo')
@@ -65,7 +67,7 @@ def printStock():
     print(f'>>> {stock.symbol} <<<')
     print(f'- Preço: ${stock.price:.2f}')
     print(f'- Abriu em: ${stock.open:.2f}')
-    print(f'- Lucro/Perda: {stock.performance}%')
+    print(f'- Lucro/Perda: {stock.performance:.2f}%')
     print(f'- Alta do mês: ${stock.high:.2f}')
     print(f'- Baixa do mês: ${stock.low:.2f}')
     print(f'- Fechou ontem em: ${stock.closeprice}')
@@ -79,9 +81,12 @@ def buyStock():
     clearTerminal()
     stockname = defaultinput()
     stock = searchStock(stockname)
+    
+    clearTerminal()
     print(f'>>> {stock.symbol} <<<')
     print(f'- Preço: ${stock.price:.2f}')
-    print(f'- Lucro/Perda: {stock.performance}%')
+    print(f'- Lucro/Perda: {stock.performance:.2f}%')
+    print(f'> Seu saldo: ${profile.money:.2f}')
 
     qtd = float(input('\nQuantos ativos você quer comprar?\n>> '))
     totalprice = float(qtd * stock.price)
@@ -89,17 +94,30 @@ def buyStock():
     if totalprice <= profile.money:
         print(f'Total: ${totalprice:.2f} <-> Quantidade: {qtd}')
         slct = str(input('Confirme a compra (s/n) >> '))
-        if slct == "s":
-            for ativo in profile.assets:
+
+        if slct == "s" or slct == "S":
+                
+                #Verifica se esta na carteira
                 if stock.symbol in profile.assets:
-                    print(f'Você já tinha {stock.symbol} na carteira')
-                    leaveinput()
+                    profile.assets[stock.symbol]["amount"] += qtd
+                    profile.assets[stock.symbol]["totalspent"] += totalprice
+
+                #Se não, cria um dicionario novo
                 else:
-                    print('Você ainda não tinha')
-                    leaveinput()
+                    profile.assets[stock.symbol] = {
+                        "price": stock.price,
+                        "amount": qtd,
+                        "totalspent": totalprice
+                    }
+                clearTerminal()
+                profile.money -= totalprice
+                profile.save()
+                print(f'Saldo restante: ${profile.money:.2f}')
+                leaveinput()
                     
     else:
-        print(f'Saldo Insuficiente para esta compra!')        
+        clearTerminal()
+        print(f'[!] Saldo Insuficiente para esta compra!')        
         leaveinput()      
 
     print()
