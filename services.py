@@ -1,7 +1,7 @@
-import requests
-from dotenv import load_dotenv
-import os
 from carteira import Stock
+from dotenv import load_dotenv
+import requests
+import os
 
 
 #Alpha Vantage API
@@ -33,7 +33,8 @@ def searchStock(ticker):
                 return stock
 
         else:
-            print('Erro na busca pela ação')
+            print('[!] Erro na busca pela ação!')
+
     except requests.RequestException as e:
         print(f'API -  Falha na conexão: {e}')
     except KeyError as e:
