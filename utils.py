@@ -9,8 +9,6 @@ profile = Profile(name=data['name'], money=data['money'], assets=data['assets'],
 profile.save()
 
 
-
-
 #Main system
 def system_setup():
     selectmenu()
@@ -33,7 +31,7 @@ def selectmenu():
         if slct == 2: 
             buyStock()
         if slct == 3:
-            s = 0
+            sellStock()
         if slct == 4:
             s = 0
         if slct == 5: 
@@ -53,9 +51,9 @@ def leaveinput():
     input('Digite qualquer coisa para sair > ')
 
 def errorfoundstock(e):
-    if e:
+    try:
         print(f'Erro: {e}')
-    else:
+    except Exception:
         print('[!] Ação não encontrada!')
 
 #Limpar o Chat do Terminal
@@ -83,8 +81,8 @@ def printStock():
         print(f'- Data dos dados: {stock.date}')
         print('\n')
         leaveinput()
-    except:
-        errorfoundstock()
+    except Exception as e:
+        errorfoundstock(e)
         leaveinput()
 
 
@@ -124,11 +122,10 @@ def buyStock():
 
                     clearTerminal()
                     profile.money -= totalprice
-
                     saveHistorical(stock, qtd, totalprice, "buy")
-
-
                     profile.save()
+
+                    print('Compra Realizada com Sucesso!')
                     print(f'Saldo restante: ${profile.money:.2f}')
                     leaveinput()
                         
@@ -139,6 +136,51 @@ def buyStock():
     except Exception as e:
         errorfoundstock(e)
         leaveinput()
+
+
+def sellStock():
+    clearTerminal()
+    stockname = defaultinput()
+    try:
+        stock = searchStock(stockname)
+
+
+        if stock.symbol in profile.assets:
+            clearTerminal()
+            print(f'>>> {stock.symbol} <<<')
+            print(f'- Preço: ${stock.price:.2f}')
+            print(f"- Quantidade: {profile.assets[stock.symbol]['amount']:.2f}")
+            qtd = float(input('Quantos ativos você quer vender?\n>> '))
+
+            clearTerminal()
+            if qtd <= profile.assets[stock.symbol]['amount']:
+                venda = stock.price * qtd
+                profile.money += venda
+                profile.assets[stock.symbol]['amount'] -= qtd
+                profile.save()
+                saveHistorical(stock, qtd, venda, 'sell')
+
+                print(f'>>> {stock.symbol} <<<')
+                print(f'- Quantidade Vendida:{qtd:.2f}')
+                print(f'- Valor da Venda: + ${venda:.2f}')
+                print(f'- Quantidade Restante: {profile.assets[stock.symbol]['amount']}')
+                print(f'> Saldo: {profile.money:.2f}')
+
+                #Deleta ativo caso esteja zerado na carteira do perfil
+                if profile.assets[stock.symbol]['amount'] <= 0:
+                    del profile.assets[stock.symbol]
+ 
+            else:
+                print('Quantidade insuficiente para venda!')
+        else:
+            print('Você não possui este ativo para venda!')
+
+        leaveinput()
+
+    except Exception as e:
+        print(f'[ERRO]: {e}')
+        leaveinput()
+
 
 
 #Salvar dados da sua ação no histórico
@@ -165,10 +207,7 @@ def saveHistorical(stock, qtd, totalprice, action):
             "price": stock.price,
             "total": totalprice
             })
-        
     profile.save()
-    print('Histórico salvo!')
-
 
 
 

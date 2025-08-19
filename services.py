@@ -6,15 +6,16 @@ import os
 
 #Alpha Vantage API
 load_dotenv()
-alphaapikey = os.getenv("")
+alphaapikey = os.getenv("alpha_vantage_api_key")
 
 def searchStock(ticker):
     try:
         url = f"https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={ticker}&apikey={alphaapikey}"  
         response = requests.get(url)
-
+            
         if response.status_code == 200:
             data = response.json()
+
             if "Global Quote" in data and data["Global Quote"]:
 
                 quote = data["Global Quote"]
