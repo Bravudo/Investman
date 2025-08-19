@@ -6,7 +6,7 @@ import os
 
 #Alpha Vantage API
 load_dotenv()
-alphaapikey = os.getenv("alpha_vantage_api_key")
+alphaapikey = os.getenv("")
 
 def searchStock(ticker):
     try:
