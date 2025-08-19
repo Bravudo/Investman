@@ -27,7 +27,7 @@ except json.decoder.JSONDecodeError:
 
     #Iniciando o sistema pela primeira vez
     print('<-=-> Bem vindo ao Invest-man <-=->')
-    print('\n\n')
+    print('\n')
     name = input('Para começar, digite seu nome >> ')
     money = float(input('Digite a quantidade de dinheiro para sua conta >> '))
     
@@ -35,6 +35,6 @@ except json.decoder.JSONDecodeError:
         'name': name,
         'money': money,
         'assets': {},
-        'historical':[{}] 
+        'historical':{}
              }
     save(data, 'carteira.json')  

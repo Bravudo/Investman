@@ -1,8 +1,8 @@
 from services import searchStock
 from data.handler import load
 from carteira import Profile, Stock
+from datetime import date
 import os
-from datetime import datetime
 
 data = load('carteira.json')
 profile = Profile(name=data['name'], money=data['money'], assets=data['assets'], historical=data['historical'])
@@ -52,8 +52,11 @@ def defaultinput():
 def leaveinput():
     input('Digite qualquer coisa para sair > ')
 
-def errorfoundstock():
-    print('[!] Ação não encontrada!')
+def errorfoundstock(e):
+    if e:
+        print(f'Erro: {e}')
+    else:
+        print('[!] Ação não encontrada!')
 
 #Limpar o Chat do Terminal
 def clearTerminal():
@@ -83,6 +86,8 @@ def printStock():
     except:
         errorfoundstock()
         leaveinput()
+
+
 #Comprar uma ação
 def buyStock():
     clearTerminal()
@@ -100,7 +105,7 @@ def buyStock():
         totalprice = float(qtd * stock.price)
 
         if totalprice <= profile.money:
-            print(f'Total: ${totalprice:.2f} <-> Quantidade: {qtd}')
+            print(f'\nTotal: ${totalprice:.2f} <-> Quantidade: {qtd}')
             slct = str(input('Confirme a compra (s/n) >> '))
 
             if slct == "s" or slct == "S":
@@ -119,6 +124,10 @@ def buyStock():
 
                     clearTerminal()
                     profile.money -= totalprice
+
+                    saveHistorical(stock, qtd, totalprice, "buy")
+
+
                     profile.save()
                     print(f'Saldo restante: ${profile.money:.2f}')
                     leaveinput()
@@ -127,8 +136,40 @@ def buyStock():
             clearTerminal()
             print(f'[!] Saldo Insuficiente para esta compra!')        
             leaveinput()      
-    except:
-        errorfoundstock()
+    except Exception as e:
+        errorfoundstock(e)
         leaveinput()
+
+
+#Salvar dados da sua ação no histórico
+def saveHistorical(stock, qtd, totalprice, action):
+    #iso.format faz a data ficar em string pra verificação do action
+    today = date.today().isoformat()
+
+    if today not in profile.historical:
+        profile.historical[today] = []
+
+    if action == "buy":
+        profile.historical[today].append({
+            "action": 'buy',
+            "symbol": stock.symbol,
+            "amount": qtd,
+            "price": stock.price,
+            "total": totalprice
+            })
+    if action == "sell":
+        profile.historical[today].append({
+            "action": 'sell',
+            "symbol": stock.symbol,
+            "amount": qtd,
+            "price": stock.price,
+            "total": totalprice
+            })
+        
+    profile.save()
+    print('Histórico salvo!')
+
+
+
 
 system_setup()
