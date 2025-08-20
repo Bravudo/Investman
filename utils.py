@@ -35,7 +35,7 @@ def selectmenu():
         if slct == 4:
             viewProfile()
         if slct == 5: 
-            s = 0
+            editProfile()
         if slct == 6: 
             break
 
@@ -48,7 +48,7 @@ def defaultinput():
     return stockname
 
 def leaveinput():
-    input('\n$ Digite qualquer coisa para sair $4 ')
+    input('\n>$> Digite qualquer coisa para sair >$> ')
 
 def errorfoundstock(e):
     try:
@@ -230,9 +230,38 @@ def viewProfile():
         print(f'Ativos: Nenhum')
     leaveinput()
 
+#Editar Perfil
+def editProfile():
+    while True:
+        clearTerminal()
+        print('__Editar Perfil__')
+        print('1 > Nome')
+        print('2 > Saldo')
+        print('3 > Ativos')
+        print('4 < Voltar')
+        slct = int(input('>> '))
+
+        if slct == 1:
+            editProfileName()
+
+        if slct == 2:
+            print()
+        if slct == 3:
+            print()
+
+        if slct == 4:
+         return
 
 
+#-----Profile Functions
+def editProfileName():
+    clearTerminal()
+    print(f'Nome atual: {profile.name}')
+    newname = input(f'Novo nome >> ')
+    profile.name = newname
+    profile.save()
+    clearTerminal()
 
-
-
+    print(f'Nome atualizado para > {profile.name}')
+    leaveinput()
 system_setup()
