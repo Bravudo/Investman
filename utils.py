@@ -33,7 +33,7 @@ def selectmenu():
         if slct == 3:
             sellStock()
         if slct == 4:
-            s = 0
+            viewProfile()
         if slct == 5: 
             s = 0
         if slct == 6: 
@@ -157,8 +157,8 @@ def sellStock():
                 venda = stock.price * qtd
                 profile.money += venda
                 profile.assets[stock.symbol]['amount'] -= qtd
-                profile.save()
                 saveHistorical(stock, qtd, venda, 'sell')
+                profile.save()
 
                 print(f'>>> {stock.symbol} <<<')
                 print(f'- Quantidade Vendida:{qtd:.2f}')
@@ -166,10 +166,10 @@ def sellStock():
                 print(f'- Quantidade Restante: {profile.assets[stock.symbol]['amount']}')
                 print(f'> Saldo: {profile.money:.2f}')
 
-                #Deleta ativo caso esteja zerado na carteira do perfil
-            if profile.assets[stock.symbol]['amount'] <= 0:
-                del profile.assets[stock.symbol]
-                profile.save()
+                    #Deleta ativo caso esteja zerado na carteira do perfil
+                if profile.assets[stock.symbol]['amount'] <= 0:
+                    del profile.assets[stock.symbol]
+                    profile.save()
  
             else:
                 print('Quantidade insuficiente para venda!')
@@ -181,6 +181,22 @@ def sellStock():
     except Exception as e:
         print(f'[ERRO]: {e}')
         leaveinput()
+
+def viewProfile():
+    clearTerminal()
+    print(f'>>> {profile.name} <<<')
+    print(f'- Saldo: {profile.money}')
+    if profile.assets:
+        print('> Ativos <')
+        totalinvestido = 0
+        for ticker, data in profile.assets.items():
+            print(f'| {ticker} - Quantidade: {data['amount']} - Investido: ${data['totalspent']:.2f}')
+            totalinvestido += data['totalspent']
+        print(f'|> Total Investido: ${totalinvestido:.2f}')
+        
+    else:
+        print(f'Ativos: Nenhum')
+    leaveinput()
 
 
 
