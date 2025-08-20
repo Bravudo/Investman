@@ -167,8 +167,9 @@ def sellStock():
                 print(f'> Saldo: {profile.money:.2f}')
 
                 #Deleta ativo caso esteja zerado na carteira do perfil
-                if profile.assets[stock.symbol]['amount'] <= 0:
-                    del profile.assets[stock.symbol]
+            if profile.assets[stock.symbol]['amount'] <= 0:
+                del profile.assets[stock.symbol]
+                profile.save()
  
             else:
                 print('Quantidade insuficiente para venda!')
