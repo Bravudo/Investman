@@ -48,7 +48,7 @@ def defaultinput():
     return stockname
 
 def leaveinput():
-    input('Digite qualquer coisa para sair > ')
+    input('\n$ Digite qualquer coisa para sair $4 ')
 
 def errorfoundstock(e):
     try:
@@ -79,7 +79,6 @@ def printStock():
         print(f'- Fechou ontem em: ${stock.closeprice}')
         print(f'- Movimentações: {stock.volume}')
         print(f'- Data dos dados: {stock.date}')
-        print('\n')
         leaveinput()
     except Exception as e:
         errorfoundstock(e)
@@ -182,9 +181,11 @@ def sellStock():
         print(f'[ERRO]: {e}')
         leaveinput()
 
+
+#Vizualizar todas informações no Perfil
 def viewProfile():
     clearTerminal()
-    print(f'>>> {profile.name} <<<')
+    print(f'___{profile.name}___')
     print(f'- Saldo: {profile.money}')
     if profile.assets:
         print('> Ativos <')
