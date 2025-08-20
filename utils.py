@@ -5,7 +5,7 @@ from datetime import date
 import os
 
 data = load('carteira.json')
-profile = Profile(name=data['name'], money=data['money'], assets=data['assets'], historical=data['historical'])
+profile = Profile(name=data['name'], money=float(data['money']), assets=data['assets'], historical=data['historical'])
 profile.save()
 
 
@@ -37,6 +37,7 @@ def selectmenu():
         if slct == 5: 
             editProfile()
         if slct == 6: 
+            clearTerminal()
             break
 
 
@@ -243,9 +244,8 @@ def editProfile():
 
         if slct == 1:
             editProfileName()
-
         if slct == 2:
-            print()
+            editProfileMoney()
         if slct == 3:
             print()
 
@@ -255,13 +255,71 @@ def editProfile():
 
 #-----Profile Functions
 def editProfileName():
-    clearTerminal()
-    print(f'Nome atual: {profile.name}')
-    newname = input(f'Novo nome >> ')
-    profile.name = newname
-    profile.save()
-    clearTerminal()
+    while True:
+        clearTerminal()
+        print('__Nome__')
+        print('1 - Novo Nome')
+        print('2 - Voltar')
+        slct = int(input('>> '))
 
-    print(f'Nome atualizado para > {profile.name}')
-    leaveinput()
+        if slct == 1:
+            clearTerminal()
+            print(f'>> Nome atual: {profile.name}')
+            newname = input(f'Novo nome >> ')
+            profile.name = newname
+            profile.save()
+
+            clearTerminal()
+            print(f'>> Nome atualizado para > {profile.name}')
+            leaveinput()
+        if slct == 2:
+            return
+
+def editProfileMoney():
+    while True:
+        clearTerminal()
+        print('__Saldo__')
+        print('1 - Adicionar Saldo')
+        print('2 - Remover Saldo')
+        print('3 - Editar Saldo')
+        print('4 - Voltar')
+        slct = int(input('>> '))
+
+
+        if slct == 1:
+            clearTerminal()
+            print(f'>> Saldo atual: ${profile.money:.2f}')
+            newmoney = float(input(f'Adicionar saldo >> '))
+            profile.money += newmoney
+            profile.save()
+
+            clearTerminal()
+            print(f'>> Saldo adicionado para > ${profile.money:.2f}')
+            leaveinput()
+
+        if slct == 2:
+            clearTerminal()
+            print(f'>> Saldo atual: ${profile.money:.2f}')
+            newmoney = float(input(f'Remover saldo >> '))
+            profile.money -= newmoney
+            profile.save()
+
+            clearTerminal()
+            print(f'>> Saldo restante > ${profile.money:.2f}')
+            leaveinput()
+
+        if slct == 3:
+            clearTerminal()
+            print(f'>> Saldo atual: ${profile.money:.2f}')
+            newmoney = float(input(f'Novo saldo >> '))
+            profile.money = newmoney
+            profile.save()
+
+            clearTerminal()
+            print(f'>> Saldo atualizado para > ${profile.money:.2f}')
+            leaveinput()
+        if slct == 4:
+            return
+
+
 system_setup()
