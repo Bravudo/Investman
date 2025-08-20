@@ -301,23 +301,36 @@ def editProfileMoney():
             clearTerminal()
             print(f'>> Saldo atual: ${profile.money:.2f}')
             newmoney = float(input(f'Remover saldo >> '))
-            profile.money -= newmoney
-            profile.save()
 
-            clearTerminal()
-            print(f'>> Saldo restante > ${profile.money:.2f}')
-            leaveinput()
+            if newmoney > profile.money:
+                print('Saldo não removido.')
+                print('<!> Você tentou remover mais do que você tinha!')
+                leaveinput()
+            else:
+                profile.money -= newmoney
+                profile.save()
+
+                clearTerminal()
+                print(f'>> Saldo restante > ${profile.money:.2f}')
+                leaveinput()
 
         if slct == 3:
             clearTerminal()
             print(f'>> Saldo atual: ${profile.money:.2f}')
             newmoney = float(input(f'Novo saldo >> '))
-            profile.money = newmoney
-            profile.save()
+            
+            if newmoney < 0:
+                print('Saldo não editado.')
+                print('<!> Você tentou colocar um saldo negativo!')
+                leaveinput()
+            else:
+                profile.money = newmoney
+                profile.save()
 
-            clearTerminal()
-            print(f'>> Saldo atualizado para > ${profile.money:.2f}')
-            leaveinput()
+                clearTerminal()
+                print(f'>> Saldo atualizado para > ${profile.money:.2f}')
+                leaveinput()
+
         if slct == 4:
             return
 
