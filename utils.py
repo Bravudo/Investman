@@ -63,7 +63,38 @@ def clearTerminal():
     except:
         os.system('clear')
 
-#Mostrar todos os dados recebidos do ativo
+#Salvar dados da sua ação no histórico
+def saveHistorical(stock, qtd, totalprice, action):
+    #iso.format faz a data ficar em string pra verificação do action
+    today = date.today().isoformat()
+
+    if today not in profile.historical:
+        profile.historical[today] = []
+
+    if action == "buy":
+        profile.historical[today].append({
+            "action": 'buy',
+            "symbol": stock.symbol,
+            "amount": qtd,
+            "price": stock.price,
+            "total": totalprice
+            })
+    if action == "sell":
+        profile.historical[today].append({
+            "action": 'sell',
+            "symbol": stock.symbol,
+            "amount": qtd,
+            "price": stock.price,
+            "total": totalprice
+            })
+    profile.save()
+
+
+#============================
+#-------System Main Functions
+
+
+#Mostrar todos os dados recebidos da ação
 def printStock():
     clearTerminal()
     stockname = defaultinput()
@@ -85,7 +116,7 @@ def printStock():
         leaveinput()
 
 
-#Comprar uma ação
+#Comprar ações
 def buyStock():
     clearTerminal()
     stockname = defaultinput()
@@ -136,7 +167,7 @@ def buyStock():
         errorfoundstock(e)
         leaveinput()
 
-
+#Vender Ações
 def sellStock():
     clearTerminal()
     stockname = defaultinput()
@@ -182,7 +213,7 @@ def sellStock():
         leaveinput()
 
 
-#Vizualizar todas informações no Perfil
+#Visualizar Perfil
 def viewProfile():
     clearTerminal()
     print(f'___{profile.name}___')
@@ -201,31 +232,6 @@ def viewProfile():
 
 
 
-#Salvar dados da sua ação no histórico
-def saveHistorical(stock, qtd, totalprice, action):
-    #iso.format faz a data ficar em string pra verificação do action
-    today = date.today().isoformat()
-
-    if today not in profile.historical:
-        profile.historical[today] = []
-
-    if action == "buy":
-        profile.historical[today].append({
-            "action": 'buy',
-            "symbol": stock.symbol,
-            "amount": qtd,
-            "price": stock.price,
-            "total": totalprice
-            })
-    if action == "sell":
-        profile.historical[today].append({
-            "action": 'sell',
-            "symbol": stock.symbol,
-            "amount": qtd,
-            "price": stock.price,
-            "total": totalprice
-            })
-    profile.save()
 
 
 
