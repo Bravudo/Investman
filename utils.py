@@ -1,9 +1,13 @@
+#==================================
+#All Imports
 from services import searchStock
 from data.handler import load
 from carteira import Profile, Stock
 from datetime import date
 import os
+#===================================
 
+#json data bd
 data = load('carteira.json')
 profile = Profile(name=data['name'], money=float(data['money']), assets=data['assets'], historical=data['historical'])
 profile.save()
@@ -13,7 +17,7 @@ profile.save()
 def system_setup():
     selectmenu()
 
-#Menu
+#Main Menu
 def selectmenu():
     while True:
         clearTerminal()
@@ -41,8 +45,9 @@ def selectmenu():
             break
 
 
-
-
+#============================
+#Generic systems
+#============================
 #Texto de input padrão para receber o nome do ativo selecionado
 def defaultinput():
     stockname = str(input('Código do ativo >> ').upper())
@@ -89,6 +94,10 @@ def saveHistorical(stock, qtd, totalprice, action):
             "total": totalprice
             })
     profile.save()
+
+
+
+
 
 
 #============================
@@ -425,9 +434,6 @@ def editProfileStock():
             print('Sem ativos registrados.')
 
 
-
-
-        
         if slct == 0:
             return
 
