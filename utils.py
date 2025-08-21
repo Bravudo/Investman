@@ -13,12 +13,8 @@ profile = Profile(name=data['name'], money=float(data['money']), assets=data['as
 profile.save()
 
 
-#Main system
-def system_setup():
-    selectmenu()
-
 #Main Menu
-def selectmenu():
+def mainmenu():
     while True:
         clearTerminal()
         print('__I N V E S T M A N__')
@@ -31,15 +27,30 @@ def selectmenu():
         slct = int(input('>> '))
 
         if slct == 1:
-            printStock()
+            try:
+                printStock()
+            except Exception as e:
+                print(f'Erro: {e}')
         if slct == 2: 
-            buyStock()
+            try:
+                buyStock()
+            except Exception as e:
+                print(f'Erro: {e}')
         if slct == 3:
-            sellStock()
+            try:
+                sellStock()
+            except Exception as e:
+                print(f'Erro: {e}')
         if slct == 4:
-            viewProfile()
+            try:
+                viewProfile()
+            except Exception as e:
+                print(f'Erro: {e}')
         if slct == 5: 
-            editProfile()
+            try:
+                editProfile()
+            except Exception as e:
+                print(f'Erro: {e}')
         if slct == 6: 
             clearTerminal()
             break
@@ -330,8 +341,12 @@ def editProfileName():
             clearTerminal()
             print(f'>> Nome atual: {profile.name}')
             newname = input(f'Novo nome >> ')
-            profile.name = newname
-            profile.save()
+            if newname == '':
+                print('Erro: Você não escreveu nada.')
+            
+            else:    
+                profile.name = newname
+                profile.save()
 
             clearTerminal()
             print(f'>> Nome atualizado para > {profile.name}')
@@ -354,11 +369,14 @@ def editProfileMoney():
             clearTerminal()
             print(f'>> Saldo atual: ${profile.money:.2f}')
             newmoney = float(input(f'Adicionar saldo >> '))
-            profile.money += newmoney
-            profile.save()
-
-            clearTerminal()
-            print(f'>> Saldo adicionado para > ${profile.money:.2f}')
+            if newmoney < 0:
+                print(' Saldo não adicionado.')
+                print('<!>Você tentou adicionar menos que 0.')
+            else:
+                clearTerminal()
+                profile.money += newmoney
+                print(f'>> Saldo adicionado para > ${profile.money:.2f}')
+                profile.save()
             leaveinput()
 
         if slct == 2:
@@ -489,7 +507,3 @@ def editProfileStock():
 
         if slct == 0:
             return
-
-
-
-system_setup()
