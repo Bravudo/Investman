@@ -45,17 +45,20 @@ def selectmenu():
             break
 
 
-#============================
+#===============
 #Generic systems
-#============================
+#===============
+
 #Texto de input padrão para receber o nome do ativo selecionado
 def defaultinput():
     stockname = str(input('Código do ativo >> ').upper())
     return stockname
 
+#Texto de saída de input
 def leaveinput():
     input('\n>$> Digite qualquer coisa para sair >$> ')
 
+#Texto de Erro da busca por ativos
 def errorfoundstock(e):
     try:
         print(f'Erro: {e}')
@@ -95,16 +98,14 @@ def saveHistorical(stock, qtd, totalprice, action):
             })
     profile.save()
 
+#=====================#
+#System Main Functions#
+#=====================#
 
+#---------------------------
+#Exibir dados salvos da ação
+#---------------------------
 
-
-
-
-#============================
-#System Main Functions
-#============================
-
-#Mostrar todos os dados recebidos da ação
 def printStock():
     clearTerminal()
     stockname = defaultinput()
@@ -125,8 +126,9 @@ def printStock():
         errorfoundstock(e)
         leaveinput()
 
-
+#-------------
 #Comprar ações
+#-------------
 def buyStock():
     clearTerminal()
     stockname = defaultinput()
@@ -176,8 +178,9 @@ def buyStock():
     except Exception as e:
         errorfoundstock(e)
         leaveinput()
-
-#Vender Ações
+#-------------
+#Vender Ativos
+#-------------
 def sellStock():
     clearTerminal()
     stockname = defaultinput()
@@ -222,8 +225,9 @@ def sellStock():
         print(f'[ERRO]: {e}')
         leaveinput()
 
-
+#-----------------
 #Visualizar Perfil
+#-----------------
 def viewProfile():
     clearTerminal()
     print(f'___{profile.name}___')
@@ -234,13 +238,60 @@ def viewProfile():
         for ticker, data in profile.assets.items():
             print(f'| {ticker} - Quantidade: {data['amount']} - Investido: ${data['totalspent']:.2f}')
             totalinvestido += data['totalspent']
-        print(f'|> Total Investido: ${totalinvestido:.2f}')
-        
+        print(f'> Total Investido: ${totalinvestido:.2f}')
     else:
         print(f'Ativos: Nenhum')
-    leaveinput()
 
-#Editar Perfil
+    print('')
+    print('1 - Calcular Lucro/Perda')
+    print('2 - Voltar')
+    slct = int(input('>> '))
+        
+    if slct == 1:
+        clearTerminal()
+        totalstockprice = 0
+        totalstockqtd = 0
+        totalprofilestockprice = 0
+        totalprofilestockqtd = 0
+        stocknametext = ''
+        stockorder = False
+
+        for ticker, ativo in profile.assets.items():
+            stock = searchStock(ticker)
+
+            ativo['price'] = stock.price
+            
+            #Ordenação de texto
+            if stockorder == False:
+                stocknametext += ticker
+                stockorder = True
+            else:
+                stocknametext += ', ' + ticker
+
+            #dados da busca
+            totalstockprice += stock.price * ativo['amount']
+            totalstockqtd += ativo['amount']
+
+            #dados do perfil
+            totalprofilestockprice += ativo['totalspent']
+            totalprofilestockqtd += ativo['amount']
+
+        media_compra = totalstockprice / totalstockqtd 
+        media_atual = totalprofilestockprice / totalprofilestockqtd
+        porcentagem = (((media_compra - media_atual) / media_atual)* 100)
+        print(f'Utilizados: {stocknametext}.')
+        print(f'Lucro/Perda: {porcentagem:.2f}%')
+        profile.save()
+        leaveinput()
+
+
+
+    if slct == 2:
+        return
+
+#------------------------
+#Menu de Edição de Perfil
+#------------------------
 def editProfile():
     while True:
         clearTerminal()
@@ -262,7 +313,11 @@ def editProfile():
          return
 
 
-#-----Profile Functions
+#---------------------------
+#Funções da edição de Perfil
+#---------------------------
+
+#Edição do nome do usuário
 def editProfileName():
     while True:
         clearTerminal()
@@ -284,6 +339,7 @@ def editProfileName():
         if slct == 2:
             return
 
+#Edição do dinheiro do usuário
 def editProfileMoney():
     while True:
         clearTerminal()
@@ -343,6 +399,7 @@ def editProfileMoney():
             return
         
 
+#Edição dos ativos do usuário
 def editProfileStock():
      while True:
         clearTerminal()
@@ -424,15 +481,11 @@ def editProfileStock():
                        
                     if slct2 == 4:
                         return
-
-
             else: 
                 print('Nenhum ativo registrado com este nome.')
                 leaveinput()
-
         else:
             print('Sem ativos registrados.')
-
 
         if slct == 0:
             return
