@@ -92,8 +92,8 @@ def saveHistorical(stock, qtd, totalprice, action):
 
 
 #============================
-#-------System Main Functions
-
+#System Main Functions
+#============================
 
 #Mostrar todos os dados recebidos da ação
 def printStock():
@@ -247,7 +247,7 @@ def editProfile():
         if slct == 2:
             editProfileMoney()
         if slct == 3:
-            print()
+            editProfileStock()
 
         if slct == 4:
          return
@@ -284,7 +284,6 @@ def editProfileMoney():
         print('3 - Editar Saldo')
         print('4 - Voltar')
         slct = int(input('>> '))
-
 
         if slct == 1:
             clearTerminal()
@@ -333,6 +332,105 @@ def editProfileMoney():
 
         if slct == 4:
             return
+        
+
+def editProfileStock():
+     while True:
+        clearTerminal()
+        print('__Ativos__')
+        #Exibição de ativos salvos
+        if profile.assets:
+            for ticker, dado in profile.assets.items():
+                    print(f'> {ticker} < Quantidade: {dado['amount']} - Investido: {dado['totalspent']:.2f} ')
+
+            print('1 - Voltar')
+            slct = str(input('Digite o nome do ativo para edição >> ').upper())
+            if slct == '1':
+                return
+ 
+            clearTerminal()
+            if profile.assets[slct]:
+                while True:
+                    clearTerminal()
+                    print(f'{slct} - Preço: ${profile.assets[slct]['price']} - Quantidade: {profile.assets[slct]['amount']} - Total: {float(profile.assets[slct]['totalspent']):.2f} ')
+                    print(f'1 - Preço')
+                    print(f'2 - Quantidade')
+                    print(f'3 - Total Investido')
+                    print(f'4 - Voltar')
+                    slct2 = int(input('Qual informação editar? >> '))
+
+                    clearTerminal()
+                    if slct2 == 1:
+                        print(f'>>> {slct} - Preço <<< ')
+                        print(f'- Preço atual: ${profile.assets[slct]['price']}')
+                        price = float(input('Novo Preço >> $'))
+
+                        clearTerminal()
+                        if price > 0:
+                            profile.assets[slct]['price'] = price
+                            print(f'{slct} > Novo Preço: ${price:.2f}')
+                            profile.save()
+                            leaveinput()
+
+                        else:
+                            print('O novo preço não pode ser 0 ou menor que isso!')
+                            leaveinput()
+
+
+                    if slct2 == 2:
+                        print(f'>>> {slct} - Quantidade <<< ')
+                        print(f'- Quantidade atual: {profile.assets[slct]['amount']}')
+                        qtd = float(input('Nova Quantidade >> '))
+
+                        clearTerminal()
+                        #Deleta o ativo do perfil caso ele seja igual ou menor que 0
+                        if qtd <= 0:
+                            del profile.assets[slct]
+                            leaveinput()
+
+                        else:
+                            profile.assets[slct]['amount'] = qtd
+                            print(f'{slct} > Nova Quantidade: {qtd}')
+                            leaveinput()
+
+                        profile.save()
+     
+
+                    if slct2 == 3:
+                        print(f'>>> {slct} - Total Investido <<< ')
+                        print(f'- Total investido atual: ${profile.assets[slct]['totalspent']}')
+                        total = float(input('Novo total >> $'))
+
+                        clearTerminal()
+                        if total <= 0:
+                            print('Você não pode ter um total investido menor que 0!')
+                            leaveinput()
+
+                        else:
+                            profile.assets[slct]['totalspent'] = total
+                            print(f'{slct} > Novo total: ${total}')
+                            profile.save()
+                            leaveinput()
+
+                       
+                    if slct2 == 4:
+                        return
+
+
+            else: 
+                print('Nenhum ativo registrado com este nome.')
+                leaveinput()
+
+        else:
+            print('Sem ativos registrados.')
+
+
+
+
+        
+        if slct == 0:
+            return
+
 
 
 system_setup()
