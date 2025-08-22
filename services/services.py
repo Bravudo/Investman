@@ -1,4 +1,4 @@
-from carteira import Stock
+from models import Stock
 from dotenv import load_dotenv
 import requests
 import os

@@ -1,11 +1,11 @@
 #-------------------------------------
 #All Imports
 from core.menu_handler import mainmenu
-from data.handler import load, save
-from carteira import Stock, Profile
+from data.handler import load
+from models import Profile
 from core.menu_handler import mainmenu
 from data.handler import load
-from carteira import Profile
+from models import Profile
 #-------------------------------------
 
 #json data
