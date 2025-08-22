@@ -26,11 +26,19 @@ try:
 except json.decoder.JSONDecodeError:
 
     #Iniciando o sistema pela primeira vez
-    print('<-=-> Bem vindo ao Invest-man <-=->')
-    print('\n')
+    print('<💲 Bem vindo ao Investman 💲>')
+    print('')
     name = input('Para começar, digite seu nome >> ')
-    money = float(input('Digite a quantidade de dinheiro para sua conta >> '))
-    
+    while True:
+        try:
+            money = float(input('Digite um saldo para sua conta >> $'))
+            if money < 0:
+                print('Erro: O saldo não pode ser negativo.')
+                continue
+            break
+        except ValueError as e:
+            print('Erro: Digite um valor numérico válido, tente novamente.') 
+
     data = {
         'name': name,
         'money': money,

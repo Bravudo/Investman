@@ -175,6 +175,7 @@ def editProfileMoneyAdd(profile):
     if newmoney < 0:
          print(' Saldo não adicionado.')
          print('<!>Você tentou adicionar menos que 0.')
+         leaveinput()
     else:
         clearTerminal()
         profile.money += newmoney
