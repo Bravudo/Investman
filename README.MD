@@ -3,11 +3,11 @@
 Investman é um sistema de gestão de investimentos em linha de comando (CLI) desenvolvido em Python, simulando uma corretora de ações.
 
 ## Características
-🔍 Busca de Ações: Integração com Alpha Vantage API
-💰 Operações Financeiras: Compra e venda de ativos com preços atuais.
-👤 Gestão de Perfil: Visualizar e editar dados do perfil.
-📊 Cálculos Automáticos: Lucro/prejuízo e totais investidos.
-💾 Persistência de Dados: Salva automaticamente em JSON
+🔍 Busca de Ações: Integração com Alpha Vantage API  
+💰 Operações Financeiras: Compra e venda de ativos com preços atuais.  
+👤 Gestão de Perfil: Visualizar e editar dados do perfil.  
+📊 Cálculos Automáticos: Lucro/prejuízo e totais investidos.  
+💾 Persistência de Dados: Salva automaticamente em JSON  
 
 ## 📋 Pré-requisitos
 - Python 3.8 ou superior
