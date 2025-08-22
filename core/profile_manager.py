@@ -1,254 +1,21 @@
-#==================================
-#All Imports
-from services import searchStock
-from data.handler import load
-from carteira import Profile, Stock
-from datetime import date
-import traceback
-import os
-#===================================
+from core.utils import clearTerminal, leaveinput, debugtracebackprint
+from services.services import searchStock
 
-#json data bd
-data = load('carteira.json')
-profile = Profile(name=data['name'], money=float(data['money']), assets=data['assets'], historical=data['historical'])
-profile.save()
-
-#===============
-#Generic systems
-#===============
-
-#Texto de input padrão para receber o nome do ativo selecionado
-def defaultinput():
-    return input('Código do ativo >> ').upper()
-
-#Texto de saída de input
-def leaveinput():
-    input('\n>$> Digite qualquer coisa para sair >$> ')
-
-#Texto de Erro da busca por ativos
-def errorfoundstock(e):
-    try:
-        print(f'Erro: {e}')
-    except Exception:
-        print('[!] Ação não encontrada!')
-
-def debugtracebackprint(e):
-    print(f'ERRO: {type(e).__name__}: {e}')
-    print('__Traceback__')
-    traceback.print_exc()
-    input('>> ')
-
-#Limpar o Chat do Terminal
-def clearTerminal():
-    try:
-        os.system('cls')
-    except:
-        os.system('clear')
-
-#Salvar dados da sua ação no histórico
-def saveHistorical(stock, qtd, totalprice, action):
-    #iso.format faz a data ficar em string pra verificação do action
-    try:
-        today = date.today().isoformat()
-
-        if today not in profile.historical:
-            profile.historical[today] = []
-
-        if action == "buy":
-            profile.historical[today].append({
-                "action": 'buy',
-                "symbol": stock.symbol,
-                "amount": qtd,
-                "price": stock.price,
-                "total": totalprice
-                })
-        if action == "sell":
-            profile.historical[today].append({
-                "action": 'sell',
-                "symbol": stock.symbol,
-                "amount": qtd,
-                "price": stock.price,
-                "total": totalprice
-                })
-        profile.save()
-
-    except Exception as e:
-        debugtracebackprint(e)
-
-
-
-
-#-----------
-#Main System
-#-----------
-def mainmenu():
-    while True:
-        clearTerminal()
-        print('__I N V E S T M A N__')
-        print('1 > Buscar Ativo')
-        print('2 > Comprar Ativo')
-        print('3 > Vender Ativo')
-        print('4 > Ver Perfil')
-        print('5 > Editar Perfil')
-        print('6 > Sair')
-        slct = int(input('>> '))
-
-        if slct == 1:
-                printStock()
-        if slct == 2: 
-                buyStock()
-        if slct == 3:
-                sellStock()
-        if slct == 4:
-                viewProfile()
-        if slct == 5: 
-                editProfile()
-        if slct == 6: 
-                clearTerminal()
-                break
-
-
-
-#=====================#
-#System Main Functions#
-#=====================#
-
-#---------------------------
-#Exibir dados salvos da ação
-#---------------------------
-
-def printStock():
-    clearTerminal()
-    try:
-        stockname = defaultinput()
-        stock = searchStock(stockname)
-        print()
-        print(f'>>> {stock.symbol} <<<')
-        print(f'- Preço: ${stock.price:.2f}')
-        print(f'- Abriu em: ${stock.open:.2f}')
-        print(f'- Lucro/Perda: {stock.performance:.2f}%')
-        print(f'- Alta do mês: ${stock.high:.2f}')
-        print(f'- Baixa do mês: ${stock.low:.2f}')
-        print(f'- Fechou ontem em: ${stock.closeprice}')
-        print(f'- Movimentações: {stock.volume}')
-        print(f'- Data dos dados: {stock.date}')
-        leaveinput()
-
-    except Exception as e:
-        debugtracebackprint(e)
-
-
-#-------------
-#Comprar ações
-#-------------
-def buyStock():
-    try:
-        clearTerminal()
-        stockname = defaultinput()
-        stock = searchStock(stockname)
-        
-        clearTerminal()
-        print(f'>>> {stock.symbol} <<<')
-        print(f'- Preço: ${stock.price:.2f}')
-        print(f'- Lucro/Perda: {stock.performance:.2f}%')
-        print(f'> Seu saldo: ${profile.money:.2f}')
-
-        qtd = float(input('\nQuantos ativos você quer comprar?\n>> '))
-        totalprice = float(qtd * stock.price)
-
-        if totalprice <= profile.money:
-            print(f'\nTotal: ${totalprice:.2f} <-> Quantidade: {qtd}')
-            slct = str(input('Confirme a compra (s/n) >> '))
-
-            if slct == "s" or slct == "S":
-                    #Verifica se esta na carteira
-                    if stock.symbol in profile.assets:
-                        profile.assets[stock.symbol]["amount"] += qtd
-                        profile.assets[stock.symbol]["totalspent"] += totalprice
-
-                    #Se não, cria um dicionario novo
-                    else:
-                        profile.assets[stock.symbol] = {
-                            "price": stock.price,
-                            "amount": qtd,
-                            "totalspent": totalprice
-                        }
-
-                    clearTerminal()
-                    profile.money -= totalprice
-                    saveHistorical(stock, qtd, totalprice, "buy")
-                    profile.save()
-
-                    print('Compra Realizada com Sucesso!')
-                    print(f'Saldo restante: ${profile.money:.2f}')
-                    leaveinput()
-                        
-        else:
-            clearTerminal()
-            print(f'[!] Saldo Insuficiente para esta compra!')        
-            leaveinput()      
-    except Exception as e:
-        debugtracebackprint(e)
-
-#-------------
-#Vender Ativos
-#-------------
-def sellStock():
-    try:
-        clearTerminal()
-        stockname = defaultinput()
-        stock = searchStock(stockname)
-
-
-        if stock.symbol in profile.assets:
-            clearTerminal()
-            print(f'>>> {stock.symbol} <<<')
-            print(f'- Preço: ${stock.price:.2f}')
-            print(f"- Quantidade: {profile.assets[stock.symbol]['amount']:.2f}")
-            qtd = float(input('Quantos ativos você quer vender?\n>> '))
-
-            clearTerminal()
-            if qtd <= profile.assets[stock.symbol]['amount']:
-                venda = stock.price * qtd
-                profile.money += venda
-                profile.assets[stock.symbol]['amount'] -= qtd
-                saveHistorical(stock, qtd, venda, 'sell')
-                profile.save()
-
-                print(f'>>> {stock.symbol} <<<')
-                print(f'- Quantidade Vendida:{qtd:.2f}')
-                print(f'- Valor da Venda: + ${venda:.2f}')
-                print(f'- Quantidade Restante: {profile.assets[stock.symbol]['amount']}')
-                print(f'> Saldo: {profile.money:.2f}')
-
-                    #Deleta ativo caso esteja zerado na carteira do perfil
-                if profile.assets[stock.symbol]['amount'] <= 0:
-                    del profile.assets[stock.symbol]
-                    profile.save()
- 
-            else:
-                print('Quantidade insuficiente para venda!')
-        else:
-            print('Você não possui este ativo para venda!')
-        leaveinput()
-
-    except Exception as e:
-        debugtracebackprint(e)
 
 #-----------------
 #Visualizar Perfil
 #-----------------
-def viewProfile():
+def viewProfile(profile):
     try:
         if profile:
             clearTerminal()
             print(f'___{profile.name}___')
-            print(f'- Saldo: {profile.money}')
+            print(f'- Saldo: ${profile.money}')
             if profile.assets:
                 print('> Ativos <')
                 totalinvestido = 0
                 for ticker, data in profile.assets.items():
-                    print(f'| {ticker} - Quantidade: {data['amount']} - Investido: ${data['totalspent']:.2f}')
+                    print(f'| {ticker} - Quantidade: {data['amount']:.5f} - Investido: ${data['totalspent']:.2f}')
                     totalinvestido += data['totalspent']
                 print(f'> Total Investido: ${totalinvestido:.2f}')
             else:
@@ -270,9 +37,10 @@ def viewProfile():
 
                 for ticker, ativo in profile.assets.items():
                     stock = searchStock(ticker)
-
-                    ativo['price'] = stock.price
-                    
+                    if ativo['price']:
+                        ativo['price'] = stock.price
+                    else:
+                        print('Dados Faltantes: Preço do ativo')
                     #Ordenação de texto
                     if stockorder == False:
                         stocknametext += ticker
@@ -315,7 +83,7 @@ def viewProfile():
 #------------------------
 #Menu de Edição de Perfil
 #------------------------
-def editProfile():
+def editProfile(profile):
     try:
         while True:
             clearTerminal()
@@ -327,11 +95,11 @@ def editProfile():
             slct = int(input('>> '))
 
             if slct == 1:
-                editProfileName()
+                editProfileName(profile)
             if slct == 2:
-                editProfileMoney()
+                editProfileMoney(profile)
             if slct == 3:
-                editProfileStock()
+                editProfileStock(profile)
 
             if slct == 4:
                 return
@@ -345,7 +113,7 @@ def editProfile():
 #---------------------------
 
 #Edição do nome do usuário
-def editProfileName():
+def editProfileName(profile):
     try:
         while True:
             clearTerminal()
@@ -377,7 +145,7 @@ def editProfileName():
 #-----------------------------
 #Edição do dinheiro do usuário
 #-----------------------------
-def editProfileMoney():
+def editProfileMoney(profile):
     try:
         while True:
             clearTerminal()
@@ -389,18 +157,18 @@ def editProfileMoney():
             slct = int(input('>> '))
 
             if slct == 1:
-              editProfileMoneyAdd()
+              editProfileMoneyAdd(profile)
             if slct == 2:
-                editProfileMoneyRemove()
+                editProfileMoneyRemove(profile)
             if slct == 3:
-                editProfileMoneyEdit()
+                editProfileMoneyEdit(profile)
             if slct == 4:
                 return
     except Exception as e:
         debugtracebackprint(e)
 
 
-def editProfileMoneyAdd():
+def editProfileMoneyAdd(profile):
     clearTerminal()
     print(f'>> Saldo atual: ${profile.money:.2f}')
     newmoney = float(input(f'Adicionar saldo >> '))
@@ -414,7 +182,7 @@ def editProfileMoneyAdd():
         profile.save()
         leaveinput()
 
-def editProfileMoneyRemove():
+def editProfileMoneyRemove(profile):
     clearTerminal()
     print(f'>> Saldo atual: ${profile.money:.2f}')
     newmoney = float(input(f'Remover saldo >> '))
@@ -430,7 +198,7 @@ def editProfileMoneyRemove():
         print(f'>> Saldo restante > ${profile.money:.2f}')
         leaveinput()
 
-def editProfileMoneyEdit():
+def editProfileMoneyEdit(profile):
     clearTerminal()
     print(f'>> Saldo atual: ${profile.money:.2f}')
     newmoney = float(input(f'Novo saldo >> '))
@@ -446,10 +214,11 @@ def editProfileMoneyEdit():
         clearTerminal()
         print(f'>> Saldo atualizado para > ${profile.money:.2f}')
         leaveinput()
+        
 #----------------------------
 #Edição dos ativos do usuário
 #----------------------------
-def editProfileStock():
+def editProfileStock(profile):
      try:
         while True:
             clearTerminal()
@@ -466,13 +235,13 @@ def editProfileStock():
     
                 if profile.assets[slct]:
                     while True:
-                        slct2 = editStockMenu(slct)
+                        slct2 = editStockMenu(profile, slct)
                         if slct2 == 1:
-                            editStockPrice()
+                            editStockPrice(profile,slct)
                         if slct2 == 2:
-                            editStockAmount()
+                            editStockAmount(profile,slct)
                         if slct2 == 3:
-                            editStockTotalSpent()
+                            editStockTotalSpent(profile,slct)
                         if slct2 == 4:
                             return
                 else: 
@@ -488,8 +257,9 @@ def editProfileStock():
      except Exception as e:
         debugtracebackprint(e)
 
+
 #Menu da edição de ativos
-def editStockMenu(slct):
+def editStockMenu(profile, slct):
     clearTerminal()
     print(f'{slct} - Preço: ${profile.assets[slct]['price']} - Quantidade: {profile.assets[slct]['amount']} - Total: {float(profile.assets[slct]['totalspent']):.2f} ')
     print(f'1 - Preço')
@@ -499,7 +269,7 @@ def editStockMenu(slct):
     return int(input('Qual informação editar? >> '))
 
 #Edição do preço dos ativos
-def editStockPrice(slct):
+def editStockPrice(profile, slct):
     clearTerminal()
     print(f'>>> {slct} - Preço <<< ')
     print(f'- Preço atual: ${profile.assets[slct]['price']}')
@@ -517,7 +287,7 @@ def editStockPrice(slct):
             leaveinput()
 
 #Edição da quantidade de ativos
-def editStockAmount(slct):
+def editStockAmount(profile, slct):
     print(f'>>> {slct} - Quantidade <<< ')
     print(f'- Quantidade atual: {profile.assets[slct]['amount']}')
     qtd = float(input('Nova Quantidade >> '))
@@ -535,7 +305,7 @@ def editStockAmount(slct):
         profile.save()
 
 #Edição do total investido dos ativos
-def editStockTotalSpent(slct):
+def editStockTotalSpent(profile, slct):
     print(f'>>> {slct} - Total Investido <<< ')
     print(f'- Total investido atual: ${profile.assets[slct]['totalspent']}')
     total = float(input('Novo total >> $'))
