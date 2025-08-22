@@ -15,7 +15,7 @@ def printStock():
         print(f'- Preço: ${stock.price:.2f}')
         print(f'- Abriu em: ${stock.open:.2f}')
         print(f'- Lucro/Perda: {stock.performance:.2f}%')
-        print(f'- Alta do mês: ${stock.high:.2f}')
+        print(f'- Alta do dia: ${stock.high:.2f}')
         print(f'- Baixa do mês: ${stock.low:.2f}')
         print(f'- Fechou ontem em: ${stock.closeprice}')
         print(f'- Movimentações: {stock.volume}')

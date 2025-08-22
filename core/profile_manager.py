@@ -34,38 +34,42 @@ def viewProfile(profile):
                 totalprofilestockqtd = 0
                 stocknametext = ''
                 stockorder = False
+                
+                try:
+                    for ticker, ativo in profile.assets.items():
+                        stock = searchStock(ticker)
+                        if ativo['price']:
+                            ativo['price'] = stock.price
+                        else:
+                            print('Dados Faltantes: Preço do ativo')
+                        #Ordenação de texto
+                        if stockorder == False:
+                            stocknametext += ticker
+                            stockorder = True
+                        else:
+                            stocknametext += ', ' + ticker
 
-                for ticker, ativo in profile.assets.items():
-                    stock = searchStock(ticker)
-                    if ativo['price']:
-                        ativo['price'] = stock.price
-                    else:
-                        print('Dados Faltantes: Preço do ativo')
-                    #Ordenação de texto
-                    if stockorder == False:
-                        stocknametext += ticker
-                        stockorder = True
-                    else:
-                        stocknametext += ', ' + ticker
+                        #dados da busca
+                        totalstockprice += stock.price * ativo['amount']
+                        totalstockqtd += ativo['amount']
 
-                    #dados da busca
-                    totalstockprice += stock.price * ativo['amount']
-                    totalstockqtd += ativo['amount']
+                        #dados do perfil
+                        totalprofilestockprice += ativo['totalspent']
+                        totalprofilestockqtd += ativo['amount']
 
-                    #dados do perfil
-                    totalprofilestockprice += ativo['totalspent']
-                    totalprofilestockqtd += ativo['amount']
+                    media_compra = totalstockprice / totalstockqtd 
+                    media_atual = totalprofilestockprice / totalprofilestockqtd
+                    porcentagem = (((media_compra - media_atual) / media_atual)* 100)
 
-                media_compra = totalstockprice / totalstockqtd 
-                media_atual = totalprofilestockprice / totalprofilestockqtd
-                porcentagem = (((media_compra - media_atual) / media_atual)* 100)
-
-                print(f'Utilizados: {stocknametext}.')
-                print(f'Lucro/Perda: {porcentagem:.2f}%')
-                profile.save()
-
+                    print(f'Utilizados: {stocknametext}.')
+                    print(f'Lucro/Perda: {porcentagem:.2f}%')
+                    profile.save()
+                    
+                except ZeroDivisionError:
+                    print('<!> Você não possui nenhum ativo para calcular.')
+                except Exception as e:
+                    print(f'Erro: {e}')
                 leaveinput()
-
 
             if slct == 2:
                 return
