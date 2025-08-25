@@ -12,7 +12,7 @@ def viewProfile(profile):
             print(f'___{profile.name}___')
             print(f'- Saldo: ${profile.money}')
             if profile.assets:
-                print('> Ativos <')
+                print('> Ativos <')  
                 totalinvestido = 0
                 for ticker, data in profile.assets.items():
                     print(f'| {ticker} - Quantidade: {data['amount']:.5f} - Investido: ${data['totalspent']:.2f}')
@@ -27,50 +27,7 @@ def viewProfile(profile):
             slct = int(input('>> '))
                 
             if slct == 1:
-                clearTerminal()
-                totalstockprice = 0
-                totalstockqtd = 0
-                totalprofilestockprice = 0
-                totalprofilestockqtd = 0
-                stocknametext = ''
-                stockorder = False
-                
-                try:
-                    for ticker, ativo in profile.assets.items():
-                        stock = searchStock(ticker)
-                        if ativo['price']:
-                            ativo['price'] = stock.price
-                        else:
-                            print('Dados Faltantes: Preço do ativo')
-                        #Ordenação de texto
-                        if stockorder == False:
-                            stocknametext += ticker
-                            stockorder = True
-                        else:
-                            stocknametext += ', ' + ticker
-
-                        #dados da busca
-                        totalstockprice += stock.price * ativo['amount']
-                        totalstockqtd += ativo['amount']
-
-                        #dados do perfil
-                        totalprofilestockprice += ativo['totalspent']
-                        totalprofilestockqtd += ativo['amount']
-
-                    media_compra = totalstockprice / totalstockqtd 
-                    media_atual = totalprofilestockprice / totalprofilestockqtd
-                    porcentagem = (((media_compra - media_atual) / media_atual)* 100)
-
-                    print(f'Utilizados: {stocknametext}.')
-                    print(f'Lucro/Perda: {porcentagem:.2f}%')
-                    profile.save()
-                    
-                except ZeroDivisionError:
-                    print('<!> Você não possui nenhum ativo para calcular.')
-                except Exception as e:
-                    print(f'Erro: {e}')
-                leaveinput()
-
+                profit_loss(profile)
             if slct == 2:
                 return
         if not profile.name or not profile.money or not profile.assets or not profile.historical:
@@ -83,6 +40,51 @@ def viewProfile(profile):
         print(f'Erro: cálculo indevido entre números e letras: {e}')
     except Exception as e:
         debugtracebackprint(e)
+
+def profit_loss(profile):
+    clearTerminal()
+    totalstockprice = 0
+    totalstockqtd = 0
+    totalprofilestockprice = 0
+    totalprofilestockqtd = 0
+    stocknametext = ''
+    stockorder = False
+                
+    try:
+        for ticker, ativo in profile.assets.items():
+            stock = searchStock(ticker)
+            if ativo['price']:
+                ativo['price'] = stock.price
+            else:
+                print('Dados Faltantes: Preço do ativo')
+                #Ordenação de texto
+                if stockorder == False:
+                    stocknametext += ticker
+                    stockorder = True
+                else:
+                    stocknametext += ', ' + ticker
+
+                    #dados da busca
+                    totalstockprice += stock.price * ativo['amount']
+                    totalstockqtd += ativo['amount']
+
+                        #dados do perfil
+                    totalprofilestockprice += ativo['totalspent']
+                    totalprofilestockqtd += ativo['amount']
+
+                    media_compra = totalstockprice / totalstockqtd 
+                    media_atual = totalprofilestockprice / totalprofilestockqtd
+                    porcentagem = (((media_compra - media_atual) / media_atual)* 100)
+
+                    print(f'Utilizados: {stocknametext}.')
+                    print(f'Lucro/Perda: {porcentagem:.2f}%')
+                    profile.save()
+
+    except ZeroDivisionError:
+                    print('<!> Você não possui nenhum ativo para calcular.')
+    except Exception as e:
+                    print(f'Erro: {e}')
+    leaveinput()
 
 #------------------------
 #Menu de Edição de Perfil
@@ -195,13 +197,12 @@ def editProfileMoneyRemove(profile):
     if newmoney > profile.money:
         print('Saldo não removido.')
         print('<!> Você tentou remover mais do que você tinha!')
-        leaveinput()
     else:
         profile.money -= newmoney
         profile.save()
         clearTerminal()
         print(f'>> Saldo restante > ${profile.money:.2f}')
-        leaveinput()
+    leaveinput()
 
 def editProfileMoneyEdit(profile):
     clearTerminal()
@@ -285,11 +286,9 @@ def editStockPrice(profile, slct):
         profile.assets[slct]['price'] = price
         print(f'{slct} > Novo Preço: ${price:.2f}')
         profile.save()
-        leaveinput()
-
     else:
-            print('O novo preço não pode ser 0 ou menor que isso!')
-            leaveinput()
+        print('O novo preço não pode ser 0 ou menor que isso!')
+    leaveinput()
 
 #Edição da quantidade de ativos
 def editStockAmount(profile, slct):
@@ -301,13 +300,12 @@ def editStockAmount(profile, slct):
     #Deleta o ativo do perfil caso ele seja igual ou menor que 0
     if qtd <= 0:
         del profile.assets[slct]
-        leaveinput()
 
     else:
         profile.assets[slct]['amount'] = qtd
         print(f'{slct} > Nova Quantidade: {qtd}')
-        leaveinput()
         profile.save()
+    leaveinput()
 
 #Edição do total investido dos ativos
 def editStockTotalSpent(profile, slct):
@@ -318,10 +316,8 @@ def editStockTotalSpent(profile, slct):
     clearTerminal()
     if total <= 0:
         print('Você não pode ter um total investido menor que 0!')
-        leaveinput()
-
     else:
         profile.assets[slct]['totalspent'] = total
         print(f'{slct} > Novo total: ${total}')
         profile.save()
-        leaveinput()
+    leaveinput()
