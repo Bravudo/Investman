@@ -2,11 +2,11 @@
 # All imports
 from core.stock_manager import printStock, buyStock, sellStock
 from core.profile_manager import viewProfile, editProfile
-from core.utils import clearTerminal
+from core.utils import clearTerminal, selectNumber
 #------------
 
 
-#----------------
+#-----------------
 #Main Menu System
 #-----------------
 def mainmenu(profile):
@@ -19,7 +19,7 @@ def mainmenu(profile):
         print('4 > Ver Perfil')
         print('5 > Editar Perfil')
         print('6 > Sair')
-        slct = int(input('>> '))
+        slct = selectNumber()
 
         if slct == 1:
                 printStock()

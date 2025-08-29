@@ -73,3 +73,16 @@ def brazilian_data_format(data_str):
     except ValueError:
         return data_str 
 
+
+#Botão de seleção
+def selectNumber():
+    try:
+        while True:
+            select = input('>> ')
+            if select.isdigit():
+                select = int(select)
+                return select
+            else:
+                print('ERRO: Digite apenas números para seleção no menu.')
+    except Exception as e:
+        print(f'Erro Inesperado: {e}')

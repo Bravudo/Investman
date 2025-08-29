@@ -1,4 +1,4 @@
-from core.utils import clearTerminal, leaveinput, debugtracebackprint, brazilian_data_format
+from core.utils import clearTerminal, leaveinput, debugtracebackprint, brazilian_data_format, selectNumber
 from services.services import searchStock
 
 
@@ -25,7 +25,7 @@ def viewProfile(profile):
             print('1 - Calcular Lucro/Perda')
             print('2 - Histórico de atividades')
             print('3 - Voltar')
-            slct = int(input('>> '))
+            slct = selectNumber()
                 
             if slct == 1:
                 profit_loss(profile)
@@ -119,7 +119,7 @@ def editProfile(profile):
             print('2 > Saldo')
             print('3 > Ativos')
             print('4 < Voltar')
-            slct = int(input('>> '))
+            slct = selectNumber()
 
             if slct == 1:
                 editProfileName(profile)
@@ -147,7 +147,7 @@ def editProfileName(profile):
             print('__Nome__')
             print('1 - Novo Nome')
             print('2 - Voltar')
-            slct = int(input('>> '))
+            slct = selectNumber()
 
             if slct == 1:
                 clearTerminal()
@@ -181,7 +181,7 @@ def editProfileMoney(profile):
             print('2 - Remover Saldo')
             print('3 - Editar Saldo')
             print('4 - Voltar')
-            slct = int(input('>> '))
+            slct = selectNumber()
 
             if slct == 1:
               editProfileMoneyAdd(profile)
