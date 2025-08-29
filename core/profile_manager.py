@@ -9,15 +9,15 @@ def viewProfile(profile):
     try:
         if profile:
             clearTerminal()
-            print(f'___{profile.name}___')
-            print(f'- Saldo: ${profile.money}')
+            print(f'✨ {profile.name}')
+            print(f'- Saldo: ${profile.money:.2f}')
             if profile.assets:
                 print('> Ativos <')  
                 totalinvestido = 0
                 for ticker, data in profile.assets.items():
                     print(f'| {ticker} - Quantidade: {data['amount']:.5f} - Investido: ${data['totalspent']:.2f}')
                     totalinvestido += data['totalspent']
-                print(f'> Total Investido: ${totalinvestido:.2f}')
+                print(f'💵 Total Investido: ${totalinvestido:.2f}')
             else:
                 print(f'Ativos: Nenhum')
 
@@ -99,11 +99,15 @@ def profit_loss(profile):
 
 def historicalProfile(profile):
     clearTerminal()
-    for date, data in profile.historical.items():
-        date = brazilian_data_format(date)
-        print(f'\n>> 📅 {date}')
-        for op in data:
-                print(f"{op['symbol']} > Ação: {op['action']} - Quantidade: {op['amount']:.4f} - Preço: ${op['price']:.2f} - Total: ${op['total']:.2f}")
+    if profile.historical:
+        print('📖 Histórico 📖')
+        for date, data in profile.historical.items():
+            date = brazilian_data_format(date)
+            print(f'\n>> 📅 {date}')
+            for op in data:
+                    print(f"{op['symbol']} > Ação: {op['action']} - Quantidade: {op['amount']:.4f} - Preço: ${op['price']:.2f} - Total: ${op['total']:.2f}")
+    else:
+        print('Histórico Vazio.') 
     leaveinput()
 
 
@@ -114,7 +118,7 @@ def editProfile(profile):
     try:
         while True:
             clearTerminal()
-            print('__Editar Perfil__')
+            print('✍️   Editar Perfil  🫵')
             print('1 > Nome')
             print('2 > Saldo')
             print('3 > Ativos')

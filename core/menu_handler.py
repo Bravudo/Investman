@@ -13,12 +13,12 @@ def mainmenu(profile):
     while True:
         clearTerminal()
         print('__I N V E S T M A N__')
-        print('1 > Buscar Ativo')
-        print('2 > Comprar Ativo')
-        print('3 > Vender Ativo')
-        print('4 > Ver Perfil')
-        print('5 > Editar Perfil')
-        print('6 > Sair')
+        print('1 🔎 > Buscar Ativo')
+        print('2 🛒 > Comprar Ativo')
+        print('3 💲 > Vender Ativo')
+        print('4 😗 > Ver Perfil')
+        print('5 🧰 > Editar Perfil')
+        print('6 << Sair')
         slct = selectNumber()
 
         if slct == 1:
