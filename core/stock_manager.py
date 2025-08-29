@@ -64,7 +64,7 @@ def buyStock(profile):
 
                     clearTerminal()
                     profile.money -= totalprice
-                    saveHistorical(profile, stock, qtd, totalprice, "buy")
+                    saveHistorical(profile, stock, qtd, totalprice, "compra")
                     profile.save()
 
                     print('Compra Realizada com Sucesso!')
@@ -100,7 +100,7 @@ def sellStock(profile):
                 venda = stock.price * qtd
                 profile.money += venda
                 profile.assets[stock.symbol]['amount'] -= qtd
-                saveHistorical(profile, stock, qtd, venda, 'sell')
+                saveHistorical(profile, stock, qtd, venda, 'venda')
                 profile.save()
 
                 print(f'>>> {stock.symbol} <<<')

@@ -1,4 +1,4 @@
-from core.utils import clearTerminal, leaveinput, debugtracebackprint
+from core.utils import clearTerminal, leaveinput, debugtracebackprint, brazilian_data_format
 from services.services import searchStock
 
 
@@ -23,13 +23,17 @@ def viewProfile(profile):
 
             print('')
             print('1 - Calcular Lucro/Perda')
-            print('2 - Voltar')
+            print('2 - Histórico de atividades')
+            print('3 - Voltar')
             slct = int(input('>> '))
                 
             if slct == 1:
                 profit_loss(profile)
             if slct == 2:
+                historicalProfile(profile)
+            if slct == 3:
                 return
+            
         if not profile.name or not profile.money or not profile.assets or not profile.historical:
             print('Erro: Dados Faltando em Perfil.')
 
@@ -85,6 +89,23 @@ def profit_loss(profile):
     except Exception as e:
                     print(f'Erro: {e}')
     leaveinput()
+
+
+
+#------------------------
+# Historico de atividades
+#------------------------
+
+
+def historicalProfile(profile):
+    clearTerminal()
+    for date, data in profile.historical.items():
+        date = brazilian_data_format(date)
+        print(f'\n>> 📅 {date}')
+        for op in data:
+                print(f"{op['symbol']} > Ação: {op['action']} - Quantidade: {op['amount']:.4f} - Preço: ${op['price']:.2f} - Total: ${op['total']:.2f}")
+    leaveinput()
+
 
 #------------------------
 #Menu de Edição de Perfil

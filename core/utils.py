@@ -1,6 +1,7 @@
 import traceback
 import os
 from datetime import date
+from datetime import datetime
 
 #===============
 #Generic systems
@@ -43,17 +44,17 @@ def saveHistorical(profile, stock, qtd, totalprice, action):
         if today not in profile.historical:
             profile.historical[today] = []
 
-        if action == "buy":
+        if action == "compra":
             profile.historical[today].append({
-                "action": 'buy',
+                "action": 'Compra',
                 "symbol": stock.symbol,
                 "amount": qtd,
                 "price": stock.price,
                 "total": totalprice
                 })
-        if action == "sell":
+        if action == "venda":
             profile.historical[today].append({
-                "action": 'sell',
+                "action": 'Venda',
                 "symbol": stock.symbol,
                 "amount": qtd,
                 "price": stock.price,
@@ -63,3 +64,12 @@ def saveHistorical(profile, stock, qtd, totalprice, action):
 
     except Exception as e:
         debugtracebackprint(e)
+
+#Transformar data em formato brasileiro
+def brazilian_data_format(data_str):
+    try:
+        data_obj = datetime.strptime(data_str, "%Y-%m-%d")
+        return data_obj.strftime("%d/%m/%Y")
+    except ValueError:
+        return data_str 
+
