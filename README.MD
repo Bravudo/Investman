@@ -7,7 +7,8 @@ Investman é um sistema de gestão de investimentos em linha de comando (CLI) de
 💰 Operações Financeiras: Compra e venda de ativos com preços atuais.  
 👤 Gestão de Perfil: Visualizar e editar dados do perfil.  
 📊 Cálculos Automáticos: Lucro/prejuízo e totais investidos.  
-💾 Persistência de Dados: Salva automaticamente em JSON  
+💾 Persistência de Dados: Salva automaticamente em JSON.
+📖 Histórico de atividades: Salva suas compras e vendas.
 
 ## 📋 Pré-requisitos
 - Python 3.8 ou superior
